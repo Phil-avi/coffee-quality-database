@@ -3,12 +3,14 @@ from selenium.webdriver.common.by import By
 from bs4 import BeautifulSoup
 import pandas as pd
 import time
+from credentials import Credentials
 
-login_email = 'your_email_here'
-login_password = 'your_password_here'
+login_email = Credentials.login_email
+login_password = Credentials.login_password
+chromedriver=Credentials.chromedriver
 
 # open chromedriver
-driver = webdriver.Chrome('your_chromedriver_location_here')
+driver = webdriver.Chrome(chromedriver)
 time.sleep(2)
 
 # navigate to login page
@@ -30,18 +32,18 @@ time.sleep(2)
 # navigate to coffees page, then to arabicas page containing links to all quality reports 
 coffees = driver.find_element_by_xpath('//html/body/header/nav[@id="main"]/div[@class="container"]/div[@class="in"]/a[@href="/coffees"]').click()
 time.sleep(3)
-driver.find_element_by_link_text('Arabica Coffees').click()
+driver.find_element_by_link_text('Robusta Coffees').click()
 time.sleep(3)
 
 # these values can be changed if this breaks midway through collecting data to pick up close to where you left off
 page = 0
-coffeenum = 0
+coffeenum = 5
 
 while True:
 	print('page {}'.format(page))
 
-	# 50 rows in these tables * 7 columns per row = 350 cells. Every 7th cell clicks through to that coffee's data page
-	for i in range(0,350,7):
+	# 50 rows in these tables * 8 columns per row = 400 cells. Every 8th cell clicks through to that coffee's data page
+	for i in range(41,50,8):
 		time.sleep(4)
 
 		# paginate back to the desired page number
@@ -54,7 +56,7 @@ while True:
 			page_buttons = driver.find_elements_by_class_name('paginate_button')
 
 		# select the cell to click through to the next coffee-data page
-		time.sleep(2) # this next line errors out sometimes, maybe it needs more of a time buffer 
+		time.sleep(3) # this next line errors out sometimes, maybe it needs more of a time buffer
 		test_page=driver.find_elements_by_xpath('//td')[i].click()
 		time.sleep(2)
 		print('rows: ')
@@ -76,19 +78,19 @@ while True:
 			except:
 				# only one's needed but I want this to be onoxious since it's the only way I'm logging this currently
 				print('ERROR: {} failed'.format(name))
-				print('ERROR: {} failed'.format(name))
-				print('ERROR: {} failed'.format(name))
-				print('ERROR: {} failed'.format(name))
+				# print('ERROR: {} failed'.format(name))
+				# print('ERROR: {} failed'.format(name))
+				# print('ERROR: {} failed'.format(name))
 			j += 1
 
 		# go back to page with all other coffee results
 		#driver.back() # note: this isn't working as expected, manually going back to pg 1 via url instead
-		driver.get('https://database.coffeeinstitute.org/coffees/arabica')
+		driver.get('https://database.coffeeinstitute.org/coffees/robusta')
 		time.sleep(2)
 		coffeenum += 1
 
 	page += 1
-	if page == 27:
+	if page == 3:
 		break
 
 

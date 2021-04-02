@@ -1,0 +1,7 @@
+.idea/
+.ipynb_checkpoints/
+.DS_Store
+data/.DS_Store
+data/.ipynb_checkpoints/
+data/scrapped_files_arabica/
+data/scrapped_files_robusta/

@@ -4,14 +4,15 @@ import numpy as np
 # TODO: fix 'skips', add remaining rows once scrape completes 
 
 df_list = []
+colnames = ['one', 'two']
 # 87 turned out weird, figure out what happened here
-skips = [87, 101, 144, 215, 347, 350, 360,374]
-for i in range(600):
-	if i in skips:
-		print('skipping {}'.format(i))
-		pass
-	else:
-		df1 = pd.read_csv('coffee_{}_table_0.csv'.format(i))
+# skips = [87, 101, 144, 215, 347, 350, 360,374]
+for i in range(7):
+	# if i in skips:
+	# 	print('skipping {}'.format(i))
+	# 	pass
+	# else:
+		df1 = pd.read_csv('coffee_{}_table_0.csv'.format(i),names=colnames)
 		df2 = pd.read_csv('coffee_{}_table_1.csv'.format(i))
 		df3 = pd.read_csv('coffee_{}_table_2.csv'.format(i))
 		df4 = pd.read_csv('coffee_{}_table_3.csv'.format(i))
@@ -20,26 +21,22 @@ for i in range(600):
 
 		# df1
 		"""
-		   Unnamed: 0                                 0          1
-		0           0                             90.58        NaN
-		1           1        View Q Arabica Certificate        NaN
-		2           2       Print Q Arabica Certificate        NaN
-		3           3  Cupping Protocol and Descriptors        NaN
-		4           4       View Green Analysis Details        NaN
-		5           5                  Request a Sample        NaN
-		6           6                           Species    Arabica
-		7           7                             Owner  metad plc
+		   Unnamed: 0                                 0
+		0           0                             90.58      
+		1           1             Q Arabica Certificate        
+		2           2                  Embeddable Image        
+		3           3  Cupping Protocol and Descriptors      
+		4           4       View Green Analysis Details        
+		5           5                  Request a Sample        
+		6           6                   Species Arabica   
+		7           7           Owner 郭亮志 GuoLiangZhi 
 		"""
-		df1.columns = ['one','two','three']
-		colnames1 = df1['two'].tolist()
-		# these names are inconistent, but the data doesn't look important 
-		colnames1[1] = 'view_certificate_1'
-		colnames1[2] = 'view_certificate_2'
-		data1 = df1['three'].tolist()
-		data1[0] = colnames1[0]
-		colnames1[0] = 'quality_score'
-
-		df1_processed = pd.DataFrame([data1],columns=colnames1)
+		df1=df1.drop(df1.index[2:-1]).reset_index()
+		owner = df1.iloc[2, 2]
+		owner_new=owner.replace('Owner ', '')
+		df1.iloc[2, 2]=owner_new
+		data_0=df1['two'].tolist()
+		df1_processed = pd.DataFrame([data_0],columns=['Score','Certificate','Owner'])
 
 		# df2
 		"""
@@ -162,4 +159,4 @@ df_final = pd.concat(df_list, 0)
 print(df_final.columns)
 print(df_final.shape)
 print(df_final.head())
-df_final.to_csv('df_1_600.csv')
+df_final.to_csv('df.csv')
